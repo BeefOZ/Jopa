@@ -48,8 +48,6 @@ def on_click(x, y, button, pressed):
         toggle8 = not toggle8
 
 
-
-
 def f1():
     with keyboard.Listener(on_press=on_press, on_release = on_release) as listener:listener.join()
 def f2():
