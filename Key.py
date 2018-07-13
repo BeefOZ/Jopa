@@ -39,7 +39,7 @@ def on_press(key):
 
 def on_click(x, y, button, pressed):
     global toggle9,toggle8
-    if str(button) == "Button.button20":
+    if str(button) == "Button.button22":
         if pressed:
             toggle9 = True
         else:
