@@ -13,7 +13,7 @@ class Wind(tk.Tk):
         self.geometry("800x416+300+200")
         self.ToggSett = False
         img=self.UplImg() # Функция загрузки изображений в массив(словарь) Img
-        self.BG = tk.Canvas(self, width=800, height=416, highlightthickness=0)
+        self.BG = tk.Canvas(self, width=800, height=416, highlightthickness=0, bd=0)
         self.BG.create_image(400, 208, image=img['gis'])
         self.BG.pack()
         self.size = {'w':100,
@@ -25,10 +25,14 @@ class Wind(tk.Tk):
         canvasUpdate =  tk.Canvas(self, width=160, height=48, highlightthickness=0)
         canvas =        tk.Canvas(self, width=480, height=48, highlightthickness=0)
         canvSett =      tk.Canvas(self, width=50,  height=50, highlightthickness=0)
+        
         self.Sett = self.BG.create_rectangle(800-self.size["w"],#X верхнего края
-                                             416-50+4,          #Y верхнего края
-                                        800, 416-50+4,          #X Y нижнего края
-                                        outline="#737375", fill="#04070e")
+                                             416-50,          #Y верхнего края
+                                        800, 416-50,          #X Y нижнего края
+                                           outline="#737375", fill="#04070e")
+        
+        #self.Sett = self.BG.create_image(800-self.size["w"], 416-50)
+
         #self.Sett = tk.Canvas(self, width=self.size['w'],  height=0, highlightbackground="#737375", highlightthickness=0, bg="#04070e")
         canvasUpdate.pack()
         canvasUpdate.place(x=0,y=0)
@@ -64,7 +68,7 @@ class Wind(tk.Tk):
 
     def on_Sett_press(self, event):
         if self.ToggSett:
-            self.MoveSlow(self.Sett, 1, 5)
+            self.MoveSlow(self.Sett, self.size['h']*-1, 5)
             #self.Sett.config(height = 0)
             self.ToggSett = False
         else:
@@ -74,13 +78,15 @@ class Wind(tk.Tk):
 
     def MoveSlow(self, canv, to, speed):
         xyz = self.BG.coords(canv)
-        print(xyz)
-        height = int(xyz[3] - xyz[1])
+        #height = int(xyz[3] - xyz[1])
+        self.BG.coords(canv, xyz[0], xyz[1]-to, xyz[2], xyz[3] )
+        '''
         z=1
         if height > 0: z = -1
-        for i in range(height, to , 100):
+        for i in range(height, to , 1):
             self.BG.coords(canv, xyz[0], xyz[1]-i*z, xyz[2], xyz[3] )
             time.sleep(speed/100)
+        '''
 
     def UplImg (self):
         #Словарь с адресами изображений

@@ -21,7 +21,6 @@ def f():
 
 def on_release(key):
     global toggle9, toggle8
-    print(key)
     if str(key) == "'l'":
         toggle9 = False
 
