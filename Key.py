@@ -1,11 +1,11 @@
 import time, os
 from pynput import keyboard, mouse
 from threading import Thread
+from Window import Wind
 from pynput.mouse import Button, Controller
 mouse1 = Controller()
 from pynput.keyboard import Key, Controller
 keyb1 = Controller()
-from Window import Wind
 WAIT=0.04
 toggle8,toggle9,toggleR,toggleS = False, False,False,False
 def f():
@@ -27,8 +27,7 @@ def f():
         if toggleS:
             keyb1.press(Key.shift_l)
         else:
-            keyb1.release(Key.shift_l)
-        
+            keyb1.release(Key.shift_l)    
 
 def on_release(key):
     global toggle9, toggle8
@@ -92,4 +91,3 @@ if __name__ == '__main__':
     def on_click(x, y, button, pressed):
         if (str(button) == "Button.button9"): clickk(pressed)
     '''
-
