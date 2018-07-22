@@ -25,14 +25,14 @@ class Wind(tk.Tk):
         self.Set =  LabelFrame(self, bd = 0, height=self.size["h"], width=self.size["w"], bg="#04070e")
         self.Set.place(x=800-self.size["w"],y=416-50)
         self.BG.create_image(400, 391,  image=img['bott'])
-        self.quit= Button(self.Set, bd=0, bg="#737375", command = os.abort, activebackground="#40a0ca", height=32, width=32, image=img['quit'], highlightthickness=0)
+        self.quit= Button(self.Set, bd=0, highlightthickness=0, command = os.abort,
+                        bg="#737375", activebackground="#40a0ca", height=30, width=30, image=img['quit'])
         self.quit.place(x=5,y=5)
         
         canvasUpdate =  tk.Canvas(self, width=160, height=48, highlightthickness=0)
         canvas =        tk.Canvas(self, width=480, height=48, highlightthickness=0)
-        canvSett =      tk.Canvas(self, width=50,  height=50, highlightthickness=0)
+        canvSett =      tk.Canvas(self, width=50,  height=50, highlightthickness=0, bg="#737375")
         #self.Sett = self.BG.create_image(800-self.size["w"], 416-50)
-
         #self.Sett = tk.Canvas(self, width=self.size['w'],  height=0, highlightbackground="#737375", highlightthickness=0, bg="#04070e")
         canvasUpdate.pack()
         canvasUpdate.place(x=0,y=0)
@@ -48,8 +48,11 @@ class Wind(tk.Tk):
         canvasUpdate.create_image(400, 208, image=img['gis'])
         canvasUpdate.create_text(46, 25, font="Verdana 10", text=Update, fill="grey")
         canvSett.create_image(25, 25, image=img['gear'])
-        canvSett.bind('<1>', self.on_Sett_press)  #Чек позиции нажатия
-        
+        canvSett.bind('<1>', self.on_Sett_press)
+        canvSett.bind('<Enter>', self.TurnColorON)
+        canvSett.bind('<Leave>', self.TurnColorOFF)
+        self.CS = canvSett
+
         self.mainloop()       #Визуализация всего, что написанно выше
 
 
@@ -76,15 +79,15 @@ class Wind(tk.Tk):
             #self.Sett.config(height = self.size['h'])
             self.ToggSett = True
 
-    def MoveSlow(self, canv, to, speed):
+    def MoveSlow(self, obj, to, speed):
         I=1
         if to<0: 
             I=-1
             to=-to
-        Y = canv.winfo_y()
+        Y = obj.winfo_y()
         for i in range( 0, to, 1):
-            canv.place(y=Y+i*I)
-            canv.update()
+            obj.place(y=Y+i*I)
+            obj.update()
             time.sleep(speed)
         
 
@@ -95,9 +98,38 @@ class Wind(tk.Tk):
                 'upd'   : 'Upd.jpg',
                 'bott'  : 'Bottom.jpg',
                 'quit'  : 'Quit.png',
-                'gear'  : 'Gear.jpg'}
+                'gear'  : 'Gear.png'}
         for nam in Img:
             image = Image.open(Img[nam])
             image.thumbnail((800,435), Image.ANTIALIAS)
             Img[nam] = ImageTk.PhotoImage(image)
         return Img
+
+    def SetColor(self, canv, c1, c2):
+        divider = 10                    #Делитель градации цветов(в анимации)
+        c1 = [c1[1:3],c1[3:5],c1[5:]]   #color1
+        c2 = [c2[1:3],c2[3:5],c2[5:]]   #color2
+        for i in range(3):
+            c1[i]=int(c1[i])
+        for i in range(3):
+            c2[i]=int(c2[i])
+        cP = [-(c1[0]-c2[0])/divider,   #colorpart находит разницу и делит ее на кол-во циклов.
+              -(c1[1]-c2[1])/divider,
+              -(c1[2]-c2[2]) /divider]
+        speed = 0.08
+        for i in range(divider-1):
+            calc = [c1[0]+cP[0]*(i+1),
+                    c1[1]+cP[1]*(i+1),
+                    c1[2]+cP[2]*(i+1)]
+            for j in range(3):
+                calc[j]= str(int(calc[j]))
+                if len(calc[j])<2:
+                    calc[j]="0"+calc[j]
+            canv.config(bg="#" + calc[0]+calc[1]+calc[2])
+            canv.update()
+            time.sleep(speed)
+
+    def TurnColorON(self,event):
+        self.SetColor(self.CS, "#737375", "#005789")
+    def TurnColorOFF(self,event):
+        self.SetColor(self.CS, "#005789", "#737375")
